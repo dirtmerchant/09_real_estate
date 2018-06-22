@@ -1,6 +1,8 @@
 import csv
 import os
 
+from data_types import Purchase
+
 
 def main():
     print_header()
@@ -24,31 +26,47 @@ def get_data_file():
 
 def load_file(filename):
     with open(filename, 'r', encoding='utf-8') as fin:
-
         reader = csv.DictReader(fin)
-
+        purchases = []
         for row in reader:
-            print(type(row), row)
-            print("Bed count: {}".format(row['beds']))
+            # print(type(row), row)
+            # print("Bed count: {}, type: {}".format(row['beds'], type(row['beds'])))
 
-        # header = fin.readline().strip()
-        # reader = csv.reader(fin, delimiter=",")
-        # for row in reader:
-        #     print(type(row), row)
+            p = Purchase.create_from_dict(row)
+            purchases.append(p)
 
-    # print('found header:' + header)
-    #
-    # lines = []
-    # for line in fin:
-    #     line_data = line.split('.')
-    #     bed_count = line_data[4]
-    #     lines.append(line_data)
-    #
-    # print(lines[:5])
+        return purchases
+
+
+# header = fin.readline().strip()
+# reader = csv.reader(fin, delimiter=",")
+# for row in reader:
+#     print(type(row), row)
+
+# print('found header:' + header)
+#
+# lines = []
+# for line in fin:
+#     line_data = line.split('.')
+#     bed_count = line_data[4]
+#     lines.append(line_data)
+#
+# print(lines[:5])
+
+# def get_price(p):
+#     return p.price
 
 
 def query_data(data):
-    pass
+    data.sort(key=lambda p: p.price)
+
+    high_purchase = data[-1]
+    print("The most expensive house is ${:,} with {} beds and {} baths".format(
+        high_purchase.price, high_purchase.beds, high_purchase.baths))
+
+    low_purchase = data[0]
+    print("The least expensive house is ${:,} with {} beds and {} baths".format(
+        low_purchase.price, low_purchase.beds, low_purchase.baths))
 
 
 if __name__ == '__main__':
